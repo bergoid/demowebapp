@@ -1,0 +1,145 @@
+#!/bin/bash
+
+. rabot-utils
+if [ "$?" -ne "0" ]; then
+  echo "$0: Error while sourcing rabot-utils" >&2
+  exit 1
+fi
+
+function showHelp
+{
+cat << DOCSTRING
+Usage: $(basename "$0") COMMAND
+
+'$(basename "$0")' controls and checks the webserver and backend
+
+COMMAND is one of the following:
+
+    start : starts webserver and backend
+    stop : stops webserver and backend
+    status : shows if webserver and backend are running or not
+DOCSTRING
+}
+
+checkForHelp $1
+minNumArgs 1 $#
+
+require lighttpd
+
+function fg0
+{
+    echo "\e[0m"
+}
+
+function fg16
+{
+    echo "\e[$(expr $1 / 8);$(expr 30 + $(expr $1 % 8))m"
+}
+
+##########################
+#
+#   status
+#
+function status
+{
+    require pgrep
+
+    local active="$(fg16 2)ACTIVE$(fg0)"
+    local notActive="$(fg16 1)NOT ACTIVE$(fg0)"
+
+    # Check lighttpd
+    if systemctl -q is-active lighttpd.service; then
+
+        echo -e "lighttpd is $active."
+
+    else
+
+        echo -e "lighttpd is $notActive."
+
+    fi
+
+    # Check backend
+    local backendFile="backend.py"
+    if success pgrep -f "$backendFile"; then
+
+        echo -e "$backendFile is $active:"
+        pgrep -fa "$backendFile"
+
+    else
+
+        echo -e "$backendFile is $notActive."
+
+    fi
+}
+
+##########################
+#
+#   start
+#
+function start
+{
+    requireRoot
+
+    local backendFile="backend.py"
+    local backendPath="/srv/repo/backend/$backendFile"
+
+    if [ -f "$backendPath" ]; then
+    #    sudo -u http /srv/repo/scripts/startbackend $backendPath &
+        sudo -u http bash -c "setsid python $backendPath 20000 >> /srv/log/backend.log 2>&1" &
+    fi
+
+    try systemctl start lighttpd.service
+}
+
+##########################
+#
+#   stop
+#
+function stop
+{
+    requireRoot
+
+    require pgrep pkill
+
+    try systemctl stop lighttpd.service
+
+    local backendFile="backend.py"
+    local backendPath="/srv/repo/backend/$backendFile"
+
+    if [ -f "$backendPath" ]; then
+
+        pgrep -f "$backendFile" > /dev/null 2>&1
+
+        if [ "$?" -eq "0" ]; then
+
+            try pkill -f "$backendFile"
+
+        fi
+
+    fi
+}
+
+##########################
+#
+#   main
+#
+case "$1" in
+
+    start)
+        start
+        ;;
+
+    stop)
+        stop
+        ;;
+
+    status)
+        status
+        ;;
+
+    *)
+        minNumArgs 1 0
+        exit 1
+
+esac
+
