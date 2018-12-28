@@ -1,0 +1,57 @@
+body
+{
+    display: flex;
+    flex-flow: column nowrap;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+#root
+{
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 1;
+    padding: 1em;
+    max-height: 100vh;
+    justify-content: flex-start;
+}
+
+#records
+{
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+    flex-grow: 0;
+    padding: 1em;
+    max-height: 100%;
+}
+
+#recordsTitle
+{
+    flex-grow: 0;
+}
+
+#recordsList
+{
+    flex-grow: 1;
+    overflow: auto;
+}
+
+#edit
+{
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: flex-start;
+}
+
+#editForm
+{
+    flex-grow: 0;
+}
+
+#buttons
+{
+    flex-grow: 0;
+}
