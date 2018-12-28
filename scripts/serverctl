@@ -60,10 +60,11 @@ function status
 
     # Check backend
     local backendFile="backend.py"
-    if success pgrep -f "$backendFile"; then
+    if succeeds pgrep -f "$backendFile"; then
 
-        echo -e "$backendFile is $active:"
-        pgrep -fa "$backendFile"
+        echo -e "$backendFile is $active."
+#        echo -e "$backendFile is $active:"
+#        pgrep -fa "$backendFile"
 
     else
 
