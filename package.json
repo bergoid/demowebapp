@@ -11,9 +11,11 @@
     "react-bootstrap": "^0.32.4",
     "react-dom": "^16.7.0",
     "react-hyperscript-helpers": "^2.0.0",
+    "react-pure-lifecycle": "^3.0.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.2",
-    "reactstrap": "^6.5.0"
+    "reactstrap": "^6.5.0",
+    "recompose": "^0.30.0"
   },
   "scripts": {
     "start": "react-scripts start",

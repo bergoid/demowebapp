@@ -12,10 +12,10 @@ body
 {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: flex-start;
     flex-grow: 1;
     padding: 1em;
     max-height: 100vh;
-    justify-content: flex-start;
 }
 
 #records
@@ -44,6 +44,7 @@ body
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
+    flex-grow: 0;
 }
 
 #editForm
@@ -52,6 +53,18 @@ body
 }
 
 #buttons
+{
+    display: flex;
+    flex-flow: row nowrap;
+    flex-grow: 0;
+    justify-content: space-between;
+    /*
+    justify-content: space-around;
+    justify-content: space-evenly;
+    */
+}
+
+.button
 {
     flex-grow: 0;
 }

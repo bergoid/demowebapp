@@ -1,11 +1,32 @@
 import { Switch, Route } from 'react-router-dom'
 import * as h from 'react-hyperscript-helpers'
 import {observer} from "mobx-react"
+//import lifecycle from 'react-pure-lifecycle'
+import { lifecycle } from 'recompose'
 
 import {Records} from './records.js'
 import {Edit} from './edit.js'
+import {service} from '../service.js'
 
-const Page = observer(({ state }) =>
+//const pageMethods = {
+//    componentDidMount(props)
+//    {
+//        console.log('I mounted! Here are my props: ', props);
+//    }
+//};
+
+const Page = lifecycle(
+
+{
+    componentDidMount(props)
+    {
+        service.testfun()
+    }
+}
+
+)(observer(
+
+({ state }) =>
 {
     return h.h(
         Switch,
@@ -25,6 +46,7 @@ const Page = observer(({ state }) =>
             )
         ]
     )
-})
+}
+))
 
 export { Page }

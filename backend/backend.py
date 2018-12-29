@@ -1,13 +1,26 @@
 #!/usr/bin/env python
 
 '''
+JSON web service.
+Adapted from: https://gist.github.com/iaverin/f81720df9ed37a49ecee6341e4d5c0c6
+
+Removed:
+--------
+Static file serving
+
+Added:
+------
+Port argument, with default == 8080
+"api/" prefix in route
+
+==============================================
+
 Simple and functional REST server for Python (3.5) using no dependencies beyond the Python standard library.
 Ported from original lib for Python 2.7 by Liron (tliron @ github.com)  https://gist.github.com/tliron/8e9757180506f25e46d9
 Features:
 * Map URI patterns using regular expressions
 * Map any/all the HTTP VERBS (GET, PUT, DELETE, POST)
 * All responses and payloads are converted to/from JSON for you
-* Easily serve static files: a URI can be mapped to a file, in which case just GET is supported
 * You decide the media type (text/html, application/json, etc.)
 * Correct HTTP response codes and basic error messages
 * Simple REST client included! use the rest_call_json() method
@@ -18,7 +31,6 @@ curl -X PUT -d '{"name": "Shiri"}' "http://localhost:8080/record/2"
 curl "http://localhost:8080/records"
 curl -X DELETE "http://localhost:8080/record/2"
 curl "http://localhost:8080/records"
-Create the file web/index.html if you'd like to test serving static files. It will be served from the root URI.
 @author: Ivan Averin
 '''
 
@@ -48,28 +60,28 @@ def get_records(handler):
 
 
 def get_record(handler):
-    key = urllib.parse.unquote(handler.path[8:])
+    key = urllib.parse.unquote(handler.path[12:])
     return records[key] if key in records else None
 
 
 def set_record(handler):
-    key = urllib.parse.unquote(handler.path[8:])
+    key = urllib.parse.unquote(handler.path[12:])
     payload = handler.get_payload()
     records[key] = payload
     return records[key]
 
 
 def delete_record(handler):
-    key = urllib.parse.unquote(handler.path[8:])
+    key = urllib.parse.unquote(handler.path[12:])
     del records[key]
     return True  # anything except None shows success
 
 
 routes = {
-    r'^/$': {'file': 'web/index.html', 'media_type': 'text/html'},
-    r'^/records$': {'GET': get_records, 'media_type': 'application/json'},
-    r'^/record/': {'GET': get_record, 'PUT': set_record, 'DELETE': delete_record,
-                   'media_type': 'application/json'}}
+    r'^/api/records$': {'GET': get_records, 'media_type': 'application/json'},
+    r'^/api/record/': {'GET': get_record, 'PUT': set_record, 'DELETE': delete_record,
+                   'media_type': 'application/json'}
+    }
 
 poll_interval = 0.1
 
@@ -143,44 +155,23 @@ class RESTRequestHandler(http.server.BaseHTTPRequestHandler):
                     self.send_header('Content-type', route['media_type'])
                 self.end_headers()
             else:
-                if 'file' in route:
-                    if method == 'GET':
-                        try:
-                            f = open(os.path.join(here, route['file']), "rb")
-                            try:
-                                self.send_response(200)
-                                if 'media_type' in route:
-                                    self.send_header('Content-type', route['media_type'])
-                                self.end_headers()
-                                shutil.copyfileobj(f, self.wfile)
-                            finally:
-                                f.close()
-                        except Exception as e:
-                            self.send_response(404)
-                            self.end_headers()
-                            self.wfile.write('File not found\n'.encode())
-                    else:
-                        self.send_response(405)
+                if method in route:
+                    content = route[method](self)
+                    if content is not None:
+                        self.send_response(200)
+                        if 'media_type' in route:
+                            self.send_header('Content-type', route['media_type'])
                         self.end_headers()
-                        self.wfile.write('Only GET is supported\n'.encode())
+                        if method != 'DELETE':
+                            self.wfile.write(json.dumps(content).encode())
+                    else:
+                        self.send_response(404)
+                        self.end_headers()
+                        self.wfile.write('Not found\n'.encode())
                 else:
-                    if method in route:
-                        content = route[method](self)
-                        if content is not None:
-                            self.send_response(200)
-                            if 'media_type' in route:
-                                self.send_header('Content-type', route['media_type'])
-                            self.end_headers()
-                            if method != 'DELETE':
-                                self.wfile.write(json.dumps(content).encode())
-                        else:
-                            self.send_response(404)
-                            self.end_headers()
-                            self.wfile.write('Not found\n'.encode())
-                    else:
-                        self.send_response(405)
-                        self.end_headers()
-                        self.wfile.write((method + ' is not supported\n').encode())
+                    self.send_response(405)
+                    self.end_headers()
+                    self.wfile.write((method + ' is not supported\n').encode())
 
     def get_route(self):
         for path, route in self.routes.items():

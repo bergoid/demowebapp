@@ -1,26 +1,39 @@
 import * as h from 'react-hyperscript-helpers'
 import {observer} from "mobx-react"
-import { ListGroup, ListGroupItem } from 'reactstrap';
+import { Button } from 'reactstrap';
 
-const RecordsList = observer( ({state}) =>
+const buttonType = "secondary"
+
+const Buttons = observer( ({state}) =>
 {
-    return h.h(ListGroup,
-        {
-            id: "recordsList"
-        },
-        state.records.map(
-            (record, index) => h.h(
-                ListGroupItem,
+    // delete save new
+    return h.div(
+        "#buttons",
+        [
+            h.h(
+                Button,
                 {
-                    tag: "button",
-                    active: (index === state.indexSelected),
-                    action: true,
-                    onClick: () => { state.indexSelected = index }
+                    color: buttonType
                 },
-                "id: " + record.id + ", name: " + record.name
+                [ "Delete" ]
+            ),
+            h.h(
+                Button,
+                {
+                    color: buttonType
+                },
+                [ "Save" ]
+            ),
+            h.h(
+                Button,
+                {
+                    color: buttonType
+                },
+                [ "New" ]
             )
-        )
+        ]
     )
 })
 
-export { RecordsList }
+
+export { Buttons }
