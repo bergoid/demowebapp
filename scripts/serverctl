@@ -36,40 +36,28 @@ function fg16
     echo "\e[$(expr $1 / 8);$(expr 30 + $(expr $1 % 8))m"
 }
 
+backendPort=20000
 ##########################
 #
 #   status
 #
 function status
 {
-    require pgrep
-
     local active="$(fg16 2)ACTIVE$(fg0)"
     local notActive="$(fg16 1)NOT ACTIVE$(fg0)"
 
     # Check lighttpd
     if systemctl -q is-active lighttpd.service; then
-
         echo -e "lighttpd is $active."
-
     else
-
         echo -e "lighttpd is $notActive."
-
     fi
 
     # Check backend
-    local backendFile="backend.py"
-    if succeeds pgrep -f "$backendFile"; then
-
-        echo -e "$backendFile is $active."
-#        echo -e "$backendFile is $active:"
-#        pgrep -fa "$backendFile"
-
+    if succeeds curl "http://localhost:${backendPort}/api/records"; then
+        echo -e "backend is $active."
     else
-
-        echo -e "$backendFile is $notActive."
-
+        echo -e "backend is $notActive."
     fi
 }
 
@@ -86,7 +74,7 @@ function start
 
     if [ -f "$backendPath" ]; then
     #    sudo -u http /srv/repo/scripts/startbackend $backendPath &
-        sudo -u http bash -c "setsid python $backendPath 20000 >> /srv/log/backend.log 2>&1" &
+        sudo -u http bash -c "setsid python $backendPath $backendPort >> /srv/log/backend.log 2>&1" &
     fi
 
     try systemctl start lighttpd.service
@@ -113,6 +101,7 @@ function stop
 
         if [ "$?" -eq "0" ]; then
 
+            # TODO : make sure this doesn't kill e.g. vim with backend.py open
             try pkill -f "$backendFile"
 
         fi

@@ -48,9 +48,9 @@ import urllib.parse
 importlib.reload(sys)
 # sys.setdefaultencoding('utf8')
 
-here = os.path.dirname(os.path.realpath(__file__))
-here = ''
-records = {}
+#records = {}
+# Pre-load records with some data:
+records = {"1": {"name": "Simon"}, "2": {"name": "Lisa"}, "3": {"name": "Max"}}
 
 def service_worker():
     pass

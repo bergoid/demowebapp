@@ -26,7 +26,11 @@ Buttons:
 
 
 lighttpd:   
-   create route to backend
+   match for backend:
+      "^/api/"
+      "^/api$"
 
-test with browser
+   don't match, handle by lighttpd:
+      "^/apis"
+
 
