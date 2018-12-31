@@ -10,27 +10,45 @@ Modules installed after create-react-app:
 
 
 
-Buttons:
+RecordsButtons:
 
-   [ x Delete ]  [ Save ]  [ + New ]
+   [ x Delete ]  [ Edit ]  [ + New ]
 
    Delete:
       . Deletes current selection
 
    New:
-      . Deselects item in list
-      . Random ID in ID
+      . A modal pop-up form
+      . Fields:
+         . ID : readonly
+         . Name
+      . Random unique ID in 'ID'
+      . Buttons:
+         . Cancel
+         . Save
+            . Validation:
+               . Name must be non-empty
 
-   Save:
-      . Updates current selection
+   Edit:
+      . A modal pop-up form
+      . Fields:
+         . ID : readonly
+         . Name
+      . Buttons:
+         . Cancel
+         . Save
+            . Validation:
+               . Name must be non-empty
+
+Show closable alert box when request fails
+
+TODO:
+   lighttpd:
+      join 2 logfiles
+
+   backend:
+      add logging
 
 
-lighttpd:   
-   match for backend:
-      "^/api/"
-      "^/api$"
-
-   don't match, handle by lighttpd:
-      "^/apis"
-
-
+   web app:
+      use table (clickable, selectable row) as records list

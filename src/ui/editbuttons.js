@@ -4,36 +4,31 @@ import { Button } from 'reactstrap';
 
 const buttonType = "secondary"
 
-const Buttons = observer( ({state}) =>
+const EditButtons = observer( ({state}) =>
 {
-    // delete save new
     return h.div(
-        "#buttons",
+        "#editbuttons",
         [
             h.h(
                 Button,
                 {
-                    color: buttonType
+                    className : "editButton",
+                    color: buttonType,
+                    disabled: !state.selectionActive()
                 },
-                [ "Delete" ]
+                [ "Cancel" ]
             ),
             h.h(
                 Button,
                 {
+                    className : "editButton",
                     color: buttonType
                 },
                 [ "Save" ]
-            ),
-            h.h(
-                Button,
-                {
-                    color: buttonType
-                },
-                [ "New" ]
             )
         ]
     )
 })
 
 
-export { Buttons }
+export { EditButtons }

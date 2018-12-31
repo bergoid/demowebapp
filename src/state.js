@@ -1,21 +1,12 @@
 import {observable} from "mobx"
 
 const state = observable({
-    indexSelected : 1,
-    records: [
-        {
-            id: "1",
-            name: "Tom"
-        },
-        {
-            id: "3",
-            name: "Lisa"
-        },
-        {
-            id: "4",
-            name: "Sam"
-        }
-    ]
+    indexSelected : 0,
+    modalTitle: "Modal Title",
+    modalIsShown: false,
+    records: [],
+
+    selectionActive: () => (state.records.length>0 && state.indexSelected>=0)
 })
 
 export { state }

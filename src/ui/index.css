@@ -35,12 +35,14 @@ body
 
 #recordsList
 {
-    flex-grow: 1;
+    flex-grow: 0;
     overflow: auto;
 }
 
 #edit
 {
+    padding-top: 1em;
+    padding-left: 2em;
     display: flex;
     flex-flow: column nowrap;
     justify-content: flex-start;
@@ -52,19 +54,27 @@ body
     flex-grow: 0;
 }
 
-#buttons
+#recordsbuttons
 {
     display: flex;
     flex-flow: row nowrap;
     flex-grow: 0;
     justify-content: space-between;
+    margin-top: 1em;
     /*
     justify-content: space-around;
     justify-content: space-evenly;
     */
 }
 
-.button
+.recordButton
 {
     flex-grow: 0;
+    margin: .2em;
+}
+
+.editButton
+{
+    flex-grow: 0;
+    margin: .2em;
 }

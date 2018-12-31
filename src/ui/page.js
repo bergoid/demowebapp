@@ -1,26 +1,26 @@
 import { Switch, Route } from 'react-router-dom'
 import * as h from 'react-hyperscript-helpers'
 import {observer} from "mobx-react"
-//import lifecycle from 'react-pure-lifecycle'
 import { lifecycle } from 'recompose'
 
 import {Records} from './records.js'
-import {Edit} from './edit.js'
 import {service} from '../service.js'
-
-//const pageMethods = {
-//    componentDidMount(props)
-//    {
-//        console.log('I mounted! Here are my props: ', props);
-//    }
-//};
 
 const Page = lifecycle(
 
 {
-    componentDidMount(props)
+    componentDidMount()
     {
-        service.testfun()
+        service.init(this.props.state)
+        service.fetchRecordsList()
+
+        setInterval(
+            () =>
+            {
+                service.fetchRecordsList()
+            },
+            6000
+        )
     }
 }
 
@@ -38,8 +38,7 @@ const Page = lifecycle(
                     path: '/',
                     render: () => {
                         return [
-                            h.h(Records, {state, key: "records"}),
-                            h.h(Edit, {state, key: "edit"})
+                            h.h(Records, {state, key: "records"})
                         ]
                     }
                 }
