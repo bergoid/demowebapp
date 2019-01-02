@@ -3,7 +3,7 @@ import {observer} from "mobx-react"
 import {RecordsList} from "./recordslist.js"
 import {RecordsButtons} from "./recordsbuttons.js"
 
-const Records = observer( ({state}) =>
+const Records = observer( ({state, service}) =>
 {
     return h.div(
         "#records",
@@ -17,7 +17,7 @@ const Records = observer( ({state}) =>
                 ]
                 ),
             h.h(RecordsList, {state}),
-            h.h(RecordsButtons, {state})
+            h.h(RecordsButtons, {state, service})
         ]
     )
 })

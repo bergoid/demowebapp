@@ -6,7 +6,7 @@ import { Button } from 'reactstrap';
 const buttonType = "secondary"
 
 
-const RecordsButtons = observer( ({state}) =>
+const RecordsButtons = observer( ({state, service}) =>
 {
     return h.div(
         "#recordsbuttons",
@@ -17,7 +17,7 @@ const RecordsButtons = observer( ({state}) =>
                     className : "recordButton",
                     color: buttonType,
                     disabled: !state.selectionActive(),
-                    onClick : () => { console.log("Delete") }
+                    onClick : () => { service.deleteRecord(state.records[state.indexSelected].id) }
                 },
                 [ "Delete" ]
             ),
@@ -26,7 +26,13 @@ const RecordsButtons = observer( ({state}) =>
                 {
                     className : "recordButton",
                     color: buttonType,
-                    onClick : () => { state.modalIsShown=true; console.log("Edit") }
+                    disabled: !state.selectionActive(),
+                    onClick : () => {
+                        state.modal.title="Edit person"
+                        state.modal.id=state.records[state.indexSelected].id
+                        state.modal.name=state.records[state.indexSelected].name
+                        state.modal.isShown=true
+                    }
                 },
                 [ "Edit" ]
             ),
@@ -35,11 +41,16 @@ const RecordsButtons = observer( ({state}) =>
                 {
                     className : "recordButton",
                     color: buttonType,
-                    onClick : () => { console.log("New") }
+                    onClick : () => {
+                        state.modal.title="New person"
+                        state.modal.id=state.getUniqueID()
+                        state.modal.name=""
+                        state.modal.isShown=true
+                    }
                 },
                 [ "New" ]
             ),
-            h.h(EditForm, {state})
+            h.h(EditForm, {state, service})
         ]
     )
 })

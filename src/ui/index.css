@@ -28,6 +28,11 @@ body
     max-height: 100%;
 }
 
+.record
+{
+    flex-shrink: 0;
+}
+
 #recordsTitle
 {
     flex-grow: 0;
@@ -59,12 +64,9 @@ body
     display: flex;
     flex-flow: row nowrap;
     flex-grow: 0;
+    flex-shrink: 0;
     justify-content: space-between;
     margin-top: 1em;
-    /*
-    justify-content: space-around;
-    justify-content: space-evenly;
-    */
 }
 
 .recordButton
@@ -73,8 +75,3 @@ body
     margin: .2em;
 }
 
-.editButton
-{
-    flex-grow: 0;
-    margin: .2em;
-}

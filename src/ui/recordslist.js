@@ -12,6 +12,7 @@ const RecordsList = observer( ({state}) =>
             (record, index) => h.h(
                 ListGroupItem,
                 {
+                    className: "record",
                     tag: "button",
                     active: (index === state.indexSelected),
                     action: true,

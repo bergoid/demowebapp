@@ -18,6 +18,7 @@ function processRecords(records)
     )
 }
 
+//
 service.init = function(stateArg)
 {
     state = stateArg
@@ -30,8 +31,15 @@ service.init = function(stateArg)
     )
 }
 
-service.fetchRecordsList = function()
+//
+service.fetchRecordsList = function(whenReady)
 {
+    if (!backend)
+    {
+        console.error("Service not initialized")
+        return
+    }
+
     backend
         .get("/records")
         .then(data =>
@@ -40,10 +48,64 @@ service.fetchRecordsList = function()
                 state.records = processRecords(data.data)
             }
         )
+        .then(() =>
+            {
+                if (whenReady)
+                    whenReady()
+            }
+        )
         .catch(
             err =>
             {
-                console.log("An error occurred: " + err);
+                console.error("An error occurred: " + err);
+                return null;
+            })
+}
+
+//
+service.deleteRecord = function(id)
+{
+    if (!backend)
+    {
+        console.error("Service not initialized")
+        return
+    }
+
+    backend
+        .delete("/record/" + id)
+        .then(() =>
+            {
+                service.fetchRecordsList()
+            }
+        )
+        .catch(
+            err =>
+            {
+                console.error("An error occurred: " + err);
+                return null;
+            })
+}
+
+//
+service.putRecord = function(id, name, whenReady)
+{
+    if (!backend)
+    {
+        console.error("Service not initialized")
+        return
+    }
+
+    backend
+        .put("/record/" + id, { "name": name } )
+        .then(() =>
+            {
+                service.fetchRecordsList(whenReady)
+            }
+        )
+        .catch(
+            err =>
+            {
+                console.error("An error occurred: " + err);
                 return null;
             })
 }

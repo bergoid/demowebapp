@@ -38,7 +38,7 @@ const Page = lifecycle(
                     path: '/',
                     render: () => {
                         return [
-                            h.h(Records, {state, key: "records"})
+                            h.h(Records, {state, key: "records", service})
                         ]
                     }
                 }

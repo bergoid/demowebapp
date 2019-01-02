@@ -3,14 +3,42 @@ import {observer} from "mobx-react"
 import { Form, FormGroup, Input, Label } from 'reactstrap';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
-const EditForm = observer( ({state}) =>
+const EditForm = observer( ({state, service}) =>
 {
-    const modalToggle = () => { state.modalIsShown = !state.modalIsShown }
+    const modalToggle = () => { state.modal.isShown = !state.modal.isShown }
+    const alertToggle = () => { state.modal.alert.isShown = !state.modal.alert.isShown }
+
+    const formSubmit = () => {
+        if (state.modal.name.length === 0)
+        {
+            state.modal.alert.isShown = true
+            return false
+        }
+
+        service.putRecord(
+            state.modal.id,
+            state.modal.name,
+            () => {
+                state.indexSelected = state.records.findIndex(
+                    (elem) => {
+                        return (elem.id === state.modal.id)
+                    }
+                )
+                console.log("indexSelected == " + state.indexSelected)
+                console.log("records.length == " + state.records.length)
+            }
+        )
+
+        state.modal.isShown=false
+
+        return true
+    }
 
     return h.h(
         Modal,
         {
-            isOpen: state.modalIsShown,
+            autoFocus: false,
+            isOpen: state.modal.isShown,
             toggle: modalToggle
         },
         [
@@ -20,7 +48,7 @@ const EditForm = observer( ({state}) =>
                     id: "editForm"
                 },
                 [
-                    h.h(ModalHeader, { toggle: modalToggle }, [state.modalTitle]),
+                    h.h(ModalHeader, { toggle: modalToggle }, [state.modal.title]),
                     h.h(
                         ModalBody,
                         [
@@ -41,7 +69,7 @@ const EditForm = observer( ({state}) =>
                                             name: "name_IDInput",
                                             id: "id_IDInput",
                                             placeholder: "A unique alphanumerical ID",
-                                            defaultValue: state.selectionActive() ? state.records[state.indexSelected].id : ""
+                                            defaultValue: state.modal.id
                                         }
                                     )
                                 ]
@@ -59,10 +87,18 @@ const EditForm = observer( ({state}) =>
                                     h.h(
                                         Input,
                                         {
+                                            autoFocus: true,
                                             name: "name_NameInput",
                                             id: "id_NameInput",
                                             placeholder: "A person's name",
-                                            defaultValue: state.selectionActive() ? state.records[state.indexSelected].name : ""
+                                            value: state.modal.name,
+                                            onKeyPress: (e) => {
+                                                if (e.key === 'Enter')
+                                                    formSubmit()
+                                            },
+                                            onChange: (e) => {
+                                                state.modal.name = e.target.value
+                                            }
                                         }
                                     )
                                 ]
@@ -76,7 +112,9 @@ const EditForm = observer( ({state}) =>
                                 Button,
                                 {
                                     color: "secondary",
-                                    onClick: () => { state.modalIsShown=false }
+                                    onClick: () => {
+                                        state.modal.isShown=false
+                                    }
                                 },
                                 ["Cancel"]
                             ),
@@ -84,14 +122,40 @@ const EditForm = observer( ({state}) =>
                                 Button,
                                 {
                                     color: "primary",
-                                    onClick: () => { state.modalIsShown=false }
+                                    onClick: formSubmit
                                 },
                                 ["Save"]
                             )
                         ]
                     ) // ModalFooter
                 ]
-            ) // Form
+            ), // Form
+            h.h(Modal,
+                {
+                    autoFocus: false,
+                    isOpen: state.modal.alert.isShown,
+                    toggle: alertToggle
+                },
+                [
+                    h.h(ModalHeader, { toggle: alertToggle }, ["Error"]),
+                    h.h(ModalBody, ["The name cannot be empty"]),
+                    h.h(ModalFooter,
+                        [
+                            h.h(
+                                Button,
+                                {
+                                    autoFocus: true,
+                                    color: "secondary",
+                                    onClick: () => {
+                                        state.modal.alert.isShown=false
+                                    }
+                                },
+                                ["OK"]
+                            )
+                        ]
+                    )
+                ]
+            )
         ]
     ) // Modal
 })
