@@ -75,3 +75,12 @@ body
     margin: .2em;
 }
 
+tr#rowSelected
+{
+    background-color: #AACCFF;
+}
+
+tr#rowSelected:hover
+{
+    background-color: #CCDDFF;
+}
