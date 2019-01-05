@@ -1,3 +1,4 @@
+import React from 'react'
 import * as h from 'react-hyperscript-helpers'
 import {observer} from "mobx-react"
 import { Form, FormGroup, Input, Label } from 'reactstrap';
@@ -34,130 +35,112 @@ const EditForm = observer( ({state, service}) =>
         return true
     }
 
-    return h.h(
-        Modal,
+    return h.h(React.Fragment,
+    [
+        h.h(Modal,
         {
             autoFocus: false,
             isOpen: state.modal.isShown,
             toggle: modalToggle
         },
         [
-            h.h(
-                Form,
+            h.h(ModalHeader, { toggle: modalToggle }, [state.modal.title]),
+            h.h(ModalBody,
+            [
+                h.h(Form,
                 {
                     id: "editForm"
                 },
                 [
-                    h.h(ModalHeader, { toggle: modalToggle }, [state.modal.title]),
-                    h.h(
-                        ModalBody,
-                        [
-                            h.h(
-                                FormGroup,
-                                [
-                                    h.h(
-                                        Label,
-                                        "ID:",
-                                        {
-                                            for: "id_IDInput"
-                                        }
-                                    ),
-                                    h.h(
-                                        Input,
-                                        {
-                                            readOnly: true,
-                                            name: "name_IDInput",
-                                            id: "id_IDInput",
-                                            placeholder: "A unique alphanumerical ID",
-                                            defaultValue: state.modal.id
-                                        }
-                                    )
-                                ]
-                            ), // FormGroup "ID"
-                            h.h(
-                                FormGroup,
-                                [
-                                    h.h(
-                                        Label,
-                                        "Name:",
-                                        {
-                                            for: "id_NameInput"
-                                        }
-                                    ),
-                                    h.h(
-                                        Input,
-                                        {
-                                            autoFocus: true,
-                                            name: "name_NameInput",
-                                            id: "id_NameInput",
-                                            placeholder: "A person's name",
-                                            value: state.modal.name,
-                                            onKeyPress: (e) => {
-                                                if (e.key === 'Enter')
-                                                    formSubmit()
-                                            },
-                                            onChange: (e) => {
-                                                state.modal.name = e.target.value
-                                            }
-                                        }
-                                    )
-                                ]
-                            ) // FormGroup "Name"
-                        ]
-                    ), // ModalBody
-                    h.h(
-                        ModalFooter,
-                        [
-                            h.h(
-                                Button,
-                                {
-                                    color: "secondary",
-                                    onClick: () => {
-                                        state.modal.isShown=false
-                                    }
-                                },
-                                ["Cancel"]
-                            ),
-                            h.h(
-                                Button,
-                                {
-                                    color: "primary",
-                                    onClick: formSubmit
-                                },
-                                ["Save"]
-                            )
-                        ]
-                    ) // ModalFooter
-                ]
-            ), // Form
-            h.h(Modal,
+                    h.h(FormGroup,
+                    [
+                        h.h(Label, "ID:", { for: "id_IDInput" }),
+                        h.h(Input,
+                        {
+                            readOnly: true,
+                            name: "name_IDInput",
+                            id: "id_IDInput",
+                            placeholder: "A unique alphanumerical ID",
+                            defaultValue: state.modal.id
+                        }
+                        )
+                    ]
+                    ), // FormGroup "ID"
+                    h.h(FormGroup,
+                    [
+                        h.h(Label, "Name:", { for: "id_NameInput" } ),
+                        h.h(Input,
+                        {
+                            autoFocus: true,
+                            name: "name_NameInput",
+                            id: "id_NameInput",
+                            placeholder: "A person's name",
+                            value: state.modal.name,
+                            onKeyPress: (e) => {
+                                if (e.key === 'Enter')
+                                    formSubmit()
+                            },
+                            onChange: (e) => {
+                                state.modal.name = e.target.value
+                            }
+                        }
+                        )
+                    ]
+                    ) // FormGroup "Name"
+                ] // array of FormGroups
+                ) // Form
+            ]
+            ), // ModalBody
+            h.h(ModalFooter,
+            [
+                h.h(Button,
                 {
-                    autoFocus: false,
-                    isOpen: state.modal.alert.isShown,
-                    toggle: alertToggle
+                    color: "secondary",
+                    onClick: () => {
+                        state.modal.isShown=false
+                    }
                 },
-                [
-                    h.h(ModalHeader, { toggle: alertToggle }, ["Error"]),
-                    h.h(ModalBody, ["The name cannot be empty"]),
-                    h.h(ModalFooter,
-                        [
-                            h.h(
-                                Button,
-                                {
-                                    autoFocus: true,
-                                    color: "secondary",
-                                    onClick: () => {
-                                        state.modal.alert.isShown=false
-                                    }
-                                },
-                                ["OK"]
-                            )
-                        ]
-                    )
-                ]
+                ["Cancel"]
+                ),
+                h.h(Button,
+                {
+                    color: "primary",
+                    onClick: formSubmit
+                },
+                ["Save"]
+                )
+            ]
+            ) // ModalFooter
+        ]
+        ), // Modal form
+        h.h(Modal,
+        {
+            autoFocus: false,
+            isOpen: state.modal.alert.isShown,
+            toggle: alertToggle
+        },
+        [
+            h.h(ModalHeader, { toggle: alertToggle }, ["Error"]),
+            h.h(ModalBody, ["The name cannot be empty"]),
+            h.h(ModalFooter,
+            [
+                h.h(
+                    Button,
+                    {
+                        autoFocus: true,
+                        color: "secondary",
+                        onClick: () => {
+                            state.modal.alert.isShown=false
+                        }
+                    },
+                    ["OK"]
+                )
+            ]
             )
         ]
-    ) // Modal
+        ) // Modal alert
+    ]
+    ) // React.Fragment
 })
 
 
