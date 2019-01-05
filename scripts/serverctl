@@ -37,6 +37,9 @@ function fg16
 }
 
 backendPort=20000
+backendFile="backend.py"
+backendPath="/srv/repo/scripts/$backendFile"
+
 
 ##########################
 #
@@ -70,11 +73,7 @@ function start
 {
     requireRoot
 
-    local backendFile="backend.py"
-    local backendPath="/srv/repo/backend/$backendFile"
-
     if [ -f "$backendPath" ]; then
-    #    sudo -u http /srv/repo/scripts/startbackend $backendPath &
         sudo -u http bash -c "setsid python $backendPath $backendPort >> /srv/log/backend.log 2>&1" &
     fi
 
@@ -92,9 +91,6 @@ function stop
     require pgrep pkill
 
     try systemctl stop lighttpd.service
-
-    local backendFile="backend.py"
-    local backendPath="/srv/repo/backend/$backendFile"
 
     if [ -f "$backendPath" ]; then
 
