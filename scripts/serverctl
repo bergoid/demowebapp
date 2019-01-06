@@ -11,12 +11,12 @@ function showHelp
 cat << DOCSTRING
 Usage: $(basename "$0") COMMAND
 
-'$(basename "$0")' controls and checks the webserver and backend
+'$(basename "$0")' controls the webserver and backend
 
 COMMAND is one of the following:
 
-    start : starts webserver and backend
-    stop : stops webserver and backend
+    start  : starts webserver and backend
+    stop   : stops webserver and backend
     status : shows if webserver and backend are running or not
 DOCSTRING
 }

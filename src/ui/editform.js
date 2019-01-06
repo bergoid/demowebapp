@@ -25,8 +25,6 @@ const EditForm = observer( ({state, service}) =>
                         return (elem.id === state.modal.id)
                     }
                 )
-                console.log("indexSelected == " + state.indexSelected)
-                console.log("records.length == " + state.records.length)
             }
         )
 

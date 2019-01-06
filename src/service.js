@@ -25,7 +25,7 @@ service.init = function(stateArg)
 
     backend = axios.create(
         {
-            baseURL: "http://192.168.236.20/api/",
+            baseURL: window.location.protocol + "//" + window.location.host + process.env.PUBLIC_URL + "/api/",
             timeout: 2000
         }
     )
