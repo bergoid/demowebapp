@@ -60,26 +60,26 @@ def get_records(handler):
 
 
 def get_record(handler):
-    key = urllib.parse.unquote(handler.path[29:])
+    key = urllib.parse.unquote(handler.path[23:])
     return records[key] if key in records else None
 
 
 def set_record(handler):
-    key = urllib.parse.unquote(handler.path[29:])
+    key = urllib.parse.unquote(handler.path[23:])
     payload = handler.get_payload()
     records[key] = payload
     return records[key]
 
 
 def delete_record(handler):
-    key = urllib.parse.unquote(handler.path[29:])
+    key = urllib.parse.unquote(handler.path[23:])
     del records[key]
     return True  # anything except None shows success
 
 
 routes = {
-    r'^/react/demowebapp/api/records$': {'GET': get_records, 'media_type': 'application/json'},
-    r'^/react/demowebapp/api/record/': {'GET': get_record, 'PUT': set_record, 'DELETE': delete_record,
+    r'^/demowebapp/api/records$': {'GET': get_records, 'media_type': 'application/json'},
+    r'^/demowebapp/api/record/': {'GET': get_record, 'PUT': set_record, 'DELETE': delete_record,
                    'media_type': 'application/json'}
     }
 
