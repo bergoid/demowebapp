@@ -26,16 +26,6 @@ minNumArgs 1 $#
 
 require lighttpd
 
-function fg0
-{
-    echo "\e[0m"
-}
-
-function fg16
-{
-    echo "\e[$(expr $1 / 8);$(expr 30 + $(expr $1 % 8))m"
-}
-
 backendPort=20000
 backendFile="backend.py"
 backendPath="/srv/repo/scripts/$backendFile"
